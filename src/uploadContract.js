@@ -21,9 +21,18 @@ import Pool from './js/pg'
 
 AWS.config.setPromisesDependency(Promise)
 
-const horizon = process.env.STELLAR_NETWORK === 'PUBLIC' ? 'https://horizon.stellar.org' : 'https://horizon-testnet.stellar.org'
+const horizon = process.env.STELLAR_NETWORK === 'PUBLIC' ? 'https://horizon.stellar.org' : 'https://stellar-horizon-testnet.satoshipay.io/'
 const server = new Server(horizon)
-const s3 = new AWS.S3()
+
+const config = {
+  endpoint: new AWS.Endpoint('http://localhost:4566'),
+  accessKeyId: 'foo',
+  secretAccessKey: 'bar',
+  region: 'us-east-1',
+  s3ForcePathStyle: true
+}
+
+const s3 = new AWS.S3(config)
 
 const originalHandler = async (event) => {
   try {
@@ -134,6 +143,7 @@ handler
     .call()
     .catch((err) => err)
     .then((err) => {
+      console.log("in then with err", err)
       if (
         err.response
         && err.response.status === 404
