@@ -10,6 +10,7 @@ import shajs from 'sha.js'
 import BigNumber from 'bignumber.js'
 
 import { parseError, createJsonResponse } from './js/utils'
+import s3 from "./js/s3"
 import Pool from './js/pg'
 
 // DONE
@@ -23,16 +24,6 @@ AWS.config.setPromisesDependency(Promise)
 
 const horizon = process.env.STELLAR_NETWORK === 'PUBLIC' ? 'https://horizon.stellar.org' : 'https://stellar-horizon-testnet.satoshipay.io/'
 const server = new Server(horizon)
-
-const config = {
-  endpoint: new AWS.Endpoint('http://localhost:4566'),
-  accessKeyId: 'foo',
-  secretAccessKey: 'bar',
-  region: 'us-east-1',
-  s3ForcePathStyle: true
-}
-
-const s3 = new AWS.S3(config)
 
 const originalHandler = async (event) => {
   try {
@@ -143,7 +134,6 @@ handler
     .call()
     .catch((err) => err)
     .then((err) => {
-      console.log("in then with err", err)
       if (
         err.response
         && err.response.status === 404

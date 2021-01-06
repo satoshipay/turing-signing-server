@@ -2,11 +2,10 @@ import { Keypair } from 'stellar-sdk'
 
 import { createJsonResponse, parseError } from './js/utils'
 import Pool from './js/pg'
+import s3 from "./js/s3"
 import AWS from 'aws-sdk'
 
 AWS.config.setPromisesDependency(Promise)
-
-const s3 = new AWS.S3()
 
 export default async (event, context) => {
   context.callbackWaitsForEmptyEventLoop = false
