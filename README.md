@@ -15,3 +15,7 @@ npm install
 docker-compose up -d
 npm run dev-0
 ```
+
+# Troubleshooting
+
+There is an issue with `serverless-offline` on Node v15.5.0  where only GET requests will be processed properly (see [here](https://github.com/dherault/serverless-offline/issues/1151)). The solution for now is downgrading to another version of Node.
