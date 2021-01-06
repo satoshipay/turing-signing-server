@@ -1,0 +1,51 @@
+version: "3.7"
+services:
+  postgres:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_DATABASE: turing-signing-server-0
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    restart: unless-stopped
+
+  db_seeder:
+    image: andywer/plow:1.1.1
+    command: >
+      sh -c "
+        echo \"Initializing database turing-signing-server-0…\" &&
+        node /db/create-dbs.js &&
+        PGDATABASE=turing-signing-server-0 /app/plow.js migrate /db/migrations &&
+        PGDATABASE=turing-signing-server-0 /app/plow.js seed /db/seeds
+      "
+    depends_on:
+      - postgres
+    environment:
+      PGHOST: postgres
+      PGDATABASE: postgres
+      PGPASSWORD: postgres
+      PGUSER: postgres
+    restart: "no"
+    volumes:
+      - ./database:/db:ro
+
+  localstack:
+    image: localstack/localstack
+    network_mode: bridge
+    ports:
+      - "4566:4566"
+      - "4571:4571"
+      - "${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
+    environment:
+      - SERVICES=serverless
+      - DEBUG=1
+      - DEFAULT_REGION=us-east-1
+      - AWS_REGION=us-east-1
+      - DATA_DIR=${DATA_DIR- }
+      - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR- }
+      - KINESIS_ERROR_PROBABILITY=${KINESIS_ERROR_PROBABILITY- }
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - HOST_TMP_FOLDER=${TMPDIR}
+    volumes:
+      - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"

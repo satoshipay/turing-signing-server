@@ -4,11 +4,10 @@ import { compact } from 'lodash'
 import Promise from 'bluebird'
 
 import { createJsonResponse, parseError } from './js/utils'
+import s3 from './js/s3'
 import Pool from './js/pg'
 
 AWS.config.setPromisesDependency(Promise)
-
-const s3 = new AWS.S3()
 
 export default async (event, context) => {
   context.callbackWaitsForEmptyEventLoop = false

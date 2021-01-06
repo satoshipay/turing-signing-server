@@ -11,9 +11,10 @@ let options = {
 if (isDev)
   options = {
     ...options,
-    endpoint: `http://localhost:4566`,
+    endpoint: "http://localhost:4566",
     accessKeyId: "foo",
     secretAccessKey: "bar",
+    s3ForcePathStyle: true,
   };
 
-export default new AWS.Lambda(options);
+export default new AWS.S3(options);

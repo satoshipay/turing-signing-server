@@ -7,11 +7,24 @@ plugins:
   - serverless-webpack
   - serverless-offline
   - serverless-domain-manager
+  - serverless-localstack
 
 package:
   individually: true
 
 custom:
+  localstack:
+    debug: true
+    host: http://localhost
+    autostart: true
+    docker:
+      sudo: false
+    stages:
+      - dev
+    lambda:
+      # Enable this flag to improve performance
+      mountCode: true
+
   webpack:
     webpackConfig: webpack.config.js
     keepOutputDirectory: true
@@ -31,7 +44,7 @@ custom:
 
   customDomain:
     domainName: tss-${opt:instance}.stellar.buzz
-    certificateName: '*.stellar.buzz'
+    certificateName: "*.stellar.buzz"
     createRoute53Record: false
 
 provider:
@@ -50,7 +63,7 @@ provider:
       Action:
         - xray:PutTelemetryRecords
         - xray:PutTraceSegments
-      Resource: '*'
+      Resource: "*"
 
 functions:
   getToml:
@@ -66,8 +79,8 @@ functions:
           path: .well-known/stellar.toml
           method: GET
           cors:
-            origin: '*'
-            cacheControl: 'public; max-age=14400'
+            origin: "*"
+            cacheControl: "public; max-age=14400"
 
   getDetails:
     handler: src/getDetails.default
@@ -81,8 +94,8 @@ functions:
           path: /
           method: GET
           cors:
-            origin: '*'
-            cacheControl: 'public; max-age=14400'
+            origin: "*"
+            cacheControl: "public; max-age=14400"
 
   uploadContract:
     handler: src/uploadContract.default
@@ -103,8 +116,8 @@ functions:
           path: contract
           method: POST
           cors:
-            origin: '*'
-            cacheControl: 'public; max-age=14400'
+            origin: "*"
+            cacheControl: "public; max-age=14400"
 
   getContract:
     handler: src/getContract.default
@@ -118,8 +131,8 @@ functions:
           path: contract/{hash}
           method: GET
           cors:
-            origin: '*'
-            cacheControl: 'public; max-age=14400'
+            origin: "*"
+            cacheControl: "public; max-age=14400"
 
   runContract:
     handler: src/runContract.default
@@ -128,7 +141,7 @@ functions:
       - Effect: Allow
         Action:
           - lambda:InvokeFunction
-        Resource: '*'
+        Resource: "*"
     maximumRetryAttempts: 0
     maximumRecordAgeInSeconds: 0
     reservedConcurrency: 9
@@ -138,8 +151,8 @@ functions:
           path: contract/{hash}
           method: POST
           cors:
-            origin: '*'
-            cacheControl: 'public; max-age=14400'
+            origin: "*"
+            cacheControl: "public; max-age=14400"
 
   healContract:
     handler: src/healContract.default
@@ -153,8 +166,8 @@ functions:
           path: contract/{hash}
           method: PUT
           cors:
-            origin: '*'
-            cacheControl: 'public; max-age=14400'
+            origin: "*"
+            cacheControl: "public; max-age=14400"
 
   runContractPrivate:
     handler: src/runContractPrivate.default

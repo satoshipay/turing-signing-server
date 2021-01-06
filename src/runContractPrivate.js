@@ -1,10 +1,9 @@
 import requireFromString from 'require-from-string'
 import AWS from 'aws-sdk'
 import Promise from 'bluebird'
+import s3 from "./js/s3"
 
 AWS.config.setPromisesDependency(Promise)
-
-const s3 = new AWS.S3()
 
 export default async (event, context) => {
   context.callbackWaitsForEmptyEventLoop = false
